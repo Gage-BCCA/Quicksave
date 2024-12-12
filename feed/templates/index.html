@@ -23,6 +23,20 @@
             </div>
             <div class="post-card-author">
                 <p>{{ post.author.username }}</p>
+
+                {% if post.author not in extended_user_data.followed_users.all %}
+                <form action="{% url 'process_follow' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.user.id }}" name="initiating_user_id" />
+                    <input type="hidden" value="{{ post.author.id }}" name="target_user_id" />
+                    <input type="Submit" value="Follow" />
+                </form>
+                {% else %}
+                <form>
+                    <input type="Submit" value="Followed" disabled/>
+                </form>
+                {% endif %}
+
             </div>
         </div>
         <p>{{ post.post_content }}</p>

@@ -18,8 +18,13 @@ def homepage_view(request):
 
     form = UserPostForm()
     all_posts = GenericPost.objects.all().filter(immediate_parent__isnull = True)
-    context = {'form': form,
-               'posts': all_posts}
+    current_user_extended_data = ExtendedUserData.objects.get(user=request.user.id)
+    context = {
+        'form': form,
+        'posts': all_posts,
+        'extended_user_data': current_user_extended_data,
+        }
+    
     return render(request, 'index.html', context=context)
 
 @login_required
@@ -67,6 +72,29 @@ def process_comment(request):
         return redirect('homepage')
 
 @login_required
+def process_follow(request):
+
+    # This needs to be done with AJAX instead of a POST request
+    
+    if request.method != "POST":
+        return redirect('homepage')
+    
+    initiating_user_id = request.POST.get('initiating_user_id')
+    target_user_id = request.POST.get('target_user_id')
+
+    initiating_user = ExtendedUserData.objects.get(user=initiating_user_id)
+    target_user = User.objects.get(pk=target_user_id)
+
+    if not initiating_user or not target_user:
+        #TODO: Error out instead of redirect
+        return redirect('homepage')
+    
+    initiating_user.followed_users.add(target_user)
+    initiating_user.save()
+
+    return redirect('homepage')
+
+@login_required
 def individual_post_view(request, id):
     """Returns the page for an individual post with most comments"""
 
@@ -79,12 +107,12 @@ def individual_post_view(request, id):
 @login_required
 def profile_view(request, id):
     user = get_object_or_404(User, pk=id)
-    data = ExtendedUserData.objects.get(user=user)
+    data = get_object_or_404(ExtendedUserData, user=user)
     context = {
         'user': user,
         'data': data
     }
-    return render(request, 'profile.html', context=context)
+    return render(request, 'profile/profile.html', context=context)
 
 @login_required
 def create_game_view(request):
@@ -120,6 +148,14 @@ def process_game(request):
                         description=description)
         new_game.save()
         return redirect('game_landing', id=new_game.id)
+
+@login_required
+def game_browsing_view(request):
+    games = Game.objects.all()
+    context = {
+        'games': games
+    }
+    return render(request, 'games/game_browse.html', context=context)
 
 @login_required
 def create_devblog_view(request):

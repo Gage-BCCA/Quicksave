@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<img src="https://api.dicebear.com/9.x/pixel-art/svg" class="profile-page-profile-pic">
+<h1>{{ user.username }}</h1>
+{% if data.headliner %}
+<h2>{{ data.headliner }}</h2>
+{% else %}
+<h2> No headliner yet :(</h2>
+{% endif %}
+{% if request.user.id != user.id %}
+<h3>Follow</h3>
+{% endif %}
+
+{% if data.followed_users.all|length == 0 %}
+    <h3>No Followed Users :(</h3>
+{% else %}
+    <h2>Followed Users:</h2>
+    {% for followed in data.followed_users.all %}
+        <p>{{ followed.username }}</p>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

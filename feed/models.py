@@ -16,6 +16,7 @@ class GenericPost(models.Model):
     related comments, and then the immediate parent field can
     be used to organize those comments properly.
     """
+    
     date_posted = models.DateTimeField(auto_now=True)
     post_content = models.TextField()
     keywords = models.ManyToManyField(Keyword, default=None)
