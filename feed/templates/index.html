@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="welcome-container1">
+    <h3>Welcome, {{ request.user.username }}</h3>
+    <button>New Post</button>
+    <form action="{% url 'process_post' %}" method='post'>
+        <p>Comment</p>
+        {% csrf_token %}
+        {{ form }}
+        <input type="Submit" value="Reply" />
+    </form>
+    <a href="{% url 'create_game' %}"><button>Create New Game</button></a>
+</div>
+
+{% for post in posts reversed %}
+<div class="post-card">
+    <div class="post-card-top-level-post">
+        <div class="post-card-author-profile-pic-container">
+            <div class="post-card-profile-pic-container">
+                <img src="https://api.dicebear.com/9.x/pixel-art/svg" class="post-card-profile-pic">
+            </div>
+            <div class="post-card-author">
+                <p>{{ post.author.username }}</p>
+            </div>
+        </div>
+        <p>{{ post.post_content }}</p>
+        <p>{{ post.num_comments }} Replies </p>
+        <p>{{ post.num_likes }} Likes </p>
+        <p><a href="{% url 'individual_post' post.id %}">See Post </a></p>
+    </div>
+    {% for comment in post.all_comments %}
+        <div class="post-card-top-level-comment">
+            <div class="post-card-author-profile-pic-container">
+                <div class="post-card-profile-pic-container">
+                    <img src="https://api.dicebear.com/9.x/pixel-art/svg" class="post-card-comment-pic">
+                </div>
+                <div class="post-card-author">
+                    <p>{{ comment.author.username }}</p>
+                </div>
+            </div>
+            <p>{{ comment.post_content }}</p>
+        </div>
+    {% endfor %}
+    <div class="post-card-comment-container">
+        <form action="{% url 'process_comment' %}" method='post'>
+            <p>Comment</p>
+            {% csrf_token %}
+            {{ form }}
+            <input type="hidden" value="{{ post.id }}" name="post-id" />
+            <input type="Submit" value="Reply" />
+        </form>
+    </div>
+</div>
+{% endfor %}
+
+
+{% endblock content %}

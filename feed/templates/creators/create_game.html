@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="{% url "process_game" %}" method="post">
+    {% csrf_token %}
+{{ form }}
+<input type="Submit" />
+</form>
+
+{% endblock content %}

@@ -1,0 +1,31 @@
+{% extends 'accounts/anonymous_base.html' %}
+
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    <div>
+        {{ form.username.label }}
+        {{ form.username }}
+    </div>
+    <div>
+        {{ form.email.label }}
+        {{ form.email }}
+    </div>
+    <div>
+        {{ form.password1.label }}
+        {{ form.password1 }}
+    </div>
+    <div>
+        {{ form.password2.label }}
+        {{ form.password2 }}
+    </div>
+    <input type="submit">Register</input>
+</form>
+{{ form.errors }}
+<div>
+    <p>
+        Already have an account? <a href='{% url "login" %}'>Sign in</a>
+    </p>
+</div>
+
+{% endblock %}
