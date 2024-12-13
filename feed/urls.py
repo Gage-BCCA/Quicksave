@@ -16,6 +16,7 @@ urlpatterns = [
 
     # Non-authentication related user URLs
     path('u/<int:id>', views.profile_view, name="profile"),
+    path('u/<int:id>/edit-profile', views.edit_profile_view, name="edit_profile"),
     
     # Game URLs
     path('g/create', views.create_game_view, name="create_game"),

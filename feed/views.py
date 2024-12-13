@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-from .forms import UserPostForm
+from .forms import UserPostForm, UserProfileDataForm
 from .models import GenericPost
 from accounts.models import ExtendedUserData
 
@@ -113,6 +113,52 @@ def profile_view(request, id):
         'data': data
     }
     return render(request, 'profile/profile.html', context=context)
+
+@login_required
+def edit_profile_view(request, id):
+    # Query to get the targeted user's profile data
+    current_user_data = ExtendedUserData.objects.get(user=id)
+
+    # Prevent users from editing other user's profiles
+    # TODO: send 403 forbidden error instead
+    if request.user.id != id:
+        return redirect('homepage')
+    
+    if request.method == "POST":
+        form = UserProfileDataForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_headliner = form.data["headliner"]
+            new_bio = form.data["bio"]
+            new_location = form.data["location"]
+
+            # Set the profile pic to uploaded pic or to 
+            # whatever it was already set to if no pic was
+            # provided
+            try:
+                new_profile_pic = form.files["profile_pic"]
+            except KeyError:
+                new_profile_pic = current_user_data.profile_pic
+
+            current_user_data.headliner = new_headliner
+            current_user_data.bio = new_bio
+            current_user_data.location = new_location
+            current_user_data.profile_pic = new_profile_pic
+            current_user_data.save()
+            return redirect('profile', id=current_user_data.user.id)
+        
+    # Construct form with default values
+    form = UserProfileDataForm(initial={
+        "headliner": current_user_data.headliner,
+        "bio": current_user_data.bio,
+        "location": current_user_data.location,
+        "profile_pic": current_user_data.profile_pic
+    })
+    
+    context = {
+        'form': form
+    }
+
+    return render(request, 'profile/edit_profile.html', context=context)
 
 @login_required
 def create_game_view(request):

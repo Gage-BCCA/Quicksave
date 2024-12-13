@@ -19,7 +19,11 @@
     <div class="post-card-top-level-post">
         <div class="post-card-author-profile-pic-container">
             <div class="post-card-profile-pic-container">
-                <img src="https://api.dicebear.com/9.x/pixel-art/svg" class="post-card-profile-pic">
+                {% if post.author.extended_data.profile_pic %}
+                    <img src="{{ post.author.extended_data.profile_pic.url}}" class="post-card-profile-pic">
+                {% else %}
+                    <img src="https://api.dicebear.com/9.x/pixel-art/svg" class="post-card-profile-pic">
+                {% endif %}
             </div>
             <div class="post-card-author">
                 <p>{{ post.author.username }}</p>
@@ -48,7 +52,11 @@
         <div class="post-card-top-level-comment">
             <div class="post-card-author-profile-pic-container">
                 <div class="post-card-profile-pic-container">
-                    <img src="https://api.dicebear.com/9.x/pixel-art/svg" class="post-card-comment-pic">
+                    {% if post.author.extended_data.profile_pic %}
+                        <img src="{{ comment.author.extended_data.profile_pic.url}}" class="post-card-comment-pic">
+                    {% else %}
+                        <img src="https://api.dicebear.com/9.x/pixel-art/svg" class="post-card-comment-pic">
+                    {% endif %}
                 </div>
                 <div class="post-card-author">
                     <p>{{ comment.author.username }}</p>

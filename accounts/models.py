@@ -5,8 +5,8 @@ from feed.models import Game, GenericPost
 
 # Create your models here.
 class ExtendedUserData(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="extended_data")
+    profile_pic = models.ImageField(upload_to="avatars/", null=True)
     headliner = models.CharField(max_length=255, null=True)
     bio = models.TextField(null=True)
     location = models.CharField(max_length=50, null=True)
