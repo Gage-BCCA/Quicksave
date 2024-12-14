@@ -4,6 +4,35 @@ from django.contrib.auth.models import User
 class Keyword(models.Model):
     keyword = models.CharField(max_length=50)
 
+
+class Genre(models.Model):
+    genre = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.genre
+
+
+class Tag(models.Model):
+    tag = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.tag
+
+
+class Game(models.Model):
+    title = models.CharField(max_length=255)
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+    blurb = models.TextField()
+    description = models.TextField()
+    developers = models.ManyToManyField(User)
+    price = models.CharField(max_length=25, null=True)
+    release_date = models.DateField(null=True)
+    title_img = models.ImageField(upload_to='games/title-img/', null=True)
+
+    def __str__(self):
+        return self.title
+
+
 class GenericPost(models.Model):
     """
     Generic Model for posts and replies for comments.
@@ -20,7 +49,7 @@ class GenericPost(models.Model):
     date_posted = models.DateTimeField(auto_now=True)
     post_content = models.TextField()
     keywords = models.ManyToManyField(Keyword, default=None)
-    #related_game = models.ForeignKey(Game)
+    related_game = models.ForeignKey(Game, null=True, on_delete=models.CASCADE)
     top_level_parent = models.ForeignKey('GenericPost', on_delete=models.CASCADE, null=True)
     immediate_parent = models.ForeignKey('GenericPost', on_delete=models.CASCADE, null=True, related_name="child_post")
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -48,21 +77,3 @@ class GenericPost(models.Model):
     @property
     def all_comments(self):
         return GenericPost.objects.filter(immediate_parent=self.id)
-    
-
-class Genre(models.Model):
-    genre = models.CharField(max_length=255)
-
-
-class Tag(models.Model):
-    keyword = models.CharField(max_length=255)
-
-
-class Game(models.Model):
-    title = models.CharField(max_length=255)
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
-    blurb = models.TextField()
-    description = models.TextField()
-    developers = models.ManyToManyField(User)
-    price = models.CharField(max_length=25, null=True)
-    release_date = models.DateField(null=True)

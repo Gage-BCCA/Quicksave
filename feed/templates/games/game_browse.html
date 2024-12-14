@@ -4,5 +4,6 @@
 {% for game in games %}
     <h1>{{ game.title }}</h1>
     <p>{{ game.blurb }}</p>
+    <a href="{% url 'game_landing' game.id %}"><button>See more</button></a>
 {% endfor %}
 {% endblock content %}
