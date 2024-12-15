@@ -1,80 +1,147 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+{% load static %}
+<script src="{% static 'javascript/feed/_processing.js' %}" defer></script>
 <div class="welcome-container1">
+
+    {# Welcome Block #}
     <h3>Welcome, {{ request.user.username }}</h3>
-    <button>New Post</button>
+
+    {# Defunct New Post Button #}
+    <a href="{% url 'create_post' %}"><button>New Post</button></a>
+
+    {# Add New Post Form #}
     <form action="{% url 'process_post' %}" method='post'>
         <p>Comment</p>
         {% csrf_token %}
         {{ form }}
         <input type="Submit" value="Reply" />
     </form>
+
+    {# Create New Game Form #}
     <a href="{% url 'create_game' %}"><button>Create New Game</button></a>
+
 </div>
 
+{# Main Posts Loops #}
+{# Gathers all posts and sorts them chronologically #}
 {% for post in posts reversed %}
-<div class="post-card">
-    <div class="post-card-top-level-post">
-        <div class="post-card-author-profile-pic-container">
-            <div class="post-card-profile-pic-container">
-                {% if post.author.extended_data.profile_pic %}
-                    <img src="{{ post.author.extended_data.profile_pic.url}}" class="post-card-profile-pic">
-                {% else %}
-                    <img src="https://api.dicebear.com/9.x/pixel-art/svg" class="post-card-profile-pic">
-                {% endif %}
-            </div>
-            <div class="post-card-author">
-                <p>{{ post.author.username }}</p>
 
-                {% if post.author not in extended_user_data.followed_users.all %}
-                <form action="{% url 'process_follow' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ request.user.id }}" name="initiating_user_id" />
-                    <input type="hidden" value="{{ post.author.id }}" name="target_user_id" />
-                    <input type="Submit" value="Follow" />
-                </form>
-                {% else %}
-                <form>
-                    <input type="Submit" value="Followed" disabled/>
-                </form>
-                {% endif %}
+    {# Individual Post #}
+    <div class="post-card">
+        <div class="post-card-top-level-post">
 
-            </div>
-        </div>
-        <p>{{ post.post_content }}</p>
-        <p>{{ post.num_comments }} Replies </p>
-        <p>{{ post.num_likes }} Likes </p>
-        <p><a href="{% url 'individual_post' post.id %}">See Post </a></p>
-    </div>
-    {% for comment in post.all_comments %}
-        <div class="post-card-top-level-comment">
+            {# Top Level Post Author Profile Picture #}
             <div class="post-card-author-profile-pic-container">
                 <div class="post-card-profile-pic-container">
                     {% if post.author.extended_data.profile_pic %}
-                        <img src="{{ comment.author.extended_data.profile_pic.url}}" class="post-card-comment-pic">
+                        <img src="{{ post.author.extended_data.profile_pic.url}}" class="post-card-profile-pic">
                     {% else %}
-                        <img src="https://api.dicebear.com/9.x/pixel-art/svg" class="post-card-comment-pic">
+                        <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="post-card-profile-pic">
                     {% endif %}
                 </div>
+
+                {# Top Level Post Author Username #}
                 <div class="post-card-author">
-                    <p>{{ comment.author.username }}</p>
+                    <p>{{ post.author.username }}</p>
+
+                    {# Follow Button #}
+                    {% if post.author not in extended_user_data.followed_users.all %}
+                        <form action="{% url 'process_follow' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ request.user.id }}" name="initiating_user_id" />
+                            <input type="hidden" value="{{ post.author.id }}" name="target_user_id" />
+                            <input type="Submit" value="Follow" />
+                        </form>
+                    {% else %}
+                    <form>
+                        <input type="Submit" value="Followed" disabled/>
+                    </form>
+                    {% endif %}
+
                 </div>
             </div>
-            <p>{{ comment.post_content }}</p>
+
+            {# Post Body #}
+            <p>{{ post.post_content }}</p>
+            <p>{{ post.num_comments }} Replies </p>
+            <p>{{ post.num_likes }} Likes </p>
+
+            {# Link to Individual Post Page #}
+            <p><a href="{% url 'individual_post' post.id %}">See Post </a></p>
+            
+            {# Like and Dislike Button #}
+            <div>   
+                <form method="post" class="post-like-form">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
+                    <input type="hidden" value="{{ post.id }}" name="post_id" class="post-like-post-id"/>
+                    <input type="submit" value="Like" class="like-submit-button"/>
+                </form>
+                <form method="post" class="post-dislike-form">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
+                    <input type="hidden" value="{{ post.id }}" name="post_id" class="post-dislike-post-id" />
+                    <input type="submit" value="dislike" />
+                </form>
+            </div>
         </div>
-    {% endfor %}
-    <div class="post-card-comment-container">
-        <form action="{% url 'process_comment' %}" method='post'>
-            <p>Comment</p>
-            {% csrf_token %}
-            {{ form }}
-            <input type="hidden" value="{{ post.id }}" name="post-id" />
-            <input type="Submit" value="Reply" />
-        </form>
+
+        {# Comments Block #}
+        {% for comment in post.all_comments %}
+            <div class="post-card-top-level-comment">
+
+                {# Comment Profile Picture #}
+                <div class="post-card-author-profile-pic-container">
+                    <div class="post-card-profile-pic-container">
+                        {% if post.author.extended_data.profile_pic %}
+                            <img src="{{ comment.author.extended_data.profile_pic.url}}" class="post-card-comment-pic">
+                        {% else %}
+                            <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="post-card-comment-pic">
+                        {% endif %}
+                    </div>
+
+                    {# Comment Author #}
+                    <div class="post-card-author">
+                        <p>{{ comment.author.username }}</p>
+                    </div>
+
+                </div>
+
+                {# Comment Body #}
+                <p>{{ comment.post_content }}</p>
+                
+                {# First Level Comment Like and Dislike #}
+                <div>   
+                    <form method="post" class="post-like-form">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
+                        <input type="hidden" value="{{ comment.id }}" name="post_id" class="post-like-post-id"/>
+                        <input type="submit" value="Like" class="like-submit-button"/>
+                    </form>
+                    <form method="post" class="post-dislike-form">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
+                        <input type="hidden" value="{{ comment.id }}" name="post_id" class="post-dislike-post-id" />
+                        <input type="submit" value="dislike" />
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+
+        {# Add Comment Form #}
+        <div class="post-card-comment-container">
+            <form action="{% url 'process_comment' %}" method='post'>
+                <p>Comment</p>
+                {% csrf_token %}
+                {{ form }}
+                <input type="hidden" value="{{ post.id }}" name="post-id" />
+                <input type="Submit" value="Reply" />
+            </form>
+        </div>
+
     </div>
-</div>
 {% endfor %}
 
 

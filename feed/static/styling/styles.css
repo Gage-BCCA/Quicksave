@@ -54,6 +54,16 @@ body {
 }
 
 /* Main Content Styling */
+#message-box {
+    position: sticky;
+    top: 100px;
+    left: 100px;
+    background-color: #3498db;
+    padding: 50px;
+}
+.hidden {
+    display: hidden;
+}
 .content-items-header-container {
     padding: 10px;
     margin-bottom: 25px;
@@ -157,4 +167,18 @@ body {
     border-radius: 100%;
     height: 128px;
     width: 128px;
+}
+
+.card {
+    width: 190px;
+    height: 254px;
+    background: white;
+    border-radius: 10px;
+    transition: border-radius 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+   }
+   
+.shadow {
+box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
+            0 0  0 2px rgb(190, 190, 190),
+            0.3em 0.3em 1em rgba(0,0,0,0.3);
 }

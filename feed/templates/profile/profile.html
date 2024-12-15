@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
 
+{# Profile Picture #}
 {% if data.profile_pic %}
     <img src="{{ data.profile_pic.url}}" class="profile-page-profile-pic">
 {% else %}
-    <img src="https://api.dicebear.com/9.x/pixel-art/svg" class="profile-page-profile-pic">
+    <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="profile-page-profile-pic">
 {% endif %}
 
+{# Username and Headliner #}
 <h1>{{ user.username }}</h1>
 {% if data.headliner %}
     <h2>{{ data.headliner }}</h2>
@@ -15,25 +18,37 @@
     <h2> No headliner yet :(</h2>
 {% endif %}
 
+
+{# User Bio #}
 {% if data.bio %}
     <p>{{ data.bio }}</p>
 {% else %}
     <p> No bio yet :(</p>
 {% endif %}
 
+
+{# Follow Button #}
 {% if request.user.id != user.id %}
     <h3>Follow</h3>
 {% endif %}
 
+
+{# Followed Users #}
 {% if data.followed_users.all|length == 0 %}
     <h3>No Followed Users :(</h3>
 {% else %}
-    <h2>Followed Users:</h2>
-    {% for followed in data.followed_users.all %}
-        <p>{{ followed.username }}</p>
-    {% endfor %}
+    <p>Following {{ data.followed_users.count }} Users</p>
 {% endif %}
 
+
+{# Followed Games #}
+{% for game in data.followed_games.all  %}
+<h1>{{ game.title }}</h1>
+{% endfor %}
+
+
+{# Profile Edit Button #}
+{# Only renders if the targeted user ID and the request user ID are the same #}
 {% if request.user.id == user.id %}
     <a href="{% url "edit_profile" user.id %}"><button>Edit</button></a>
 {% endif %}

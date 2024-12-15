@@ -1,6 +1,9 @@
+import json
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 from .forms import UserPostForm, UserProfileDataForm
 from .models import GenericPost
@@ -47,6 +50,41 @@ def process_post(request):
                                )
         new_post.save()
         return redirect('homepage')
+   
+@login_required
+def process_post_like(request):
+    data = json.loads(request.body)
+    if not data:
+        return JsonResponse({"Error": "Bad Data Received"})
+    
+    target_user = User.objects.get(pk=data["userId"])
+    target_post = GenericPost.objects.get(pk=data["postId"])
+
+    if not target_user or not target_post:
+        return JsonResponse({"Error": "Post or User Not Found"})
+    
+    # Since Django intelligently handles any duplication checking
+    # on many-to-many fields, we can blindly add the user
+    target_post.likes.add(target_user)
+    return JsonResponse({"Success": "Post Successfully Liked"})
+    
+
+@login_required
+def process_post_dislike(request):
+    data = json.loads(request.body)
+    if not data:
+        return JsonResponse({"Error": "Bad Data Received"})
+    
+    target_user = User.objects.get(pk=data["userId"])
+    target_post = GenericPost.objects.get(pk=data["postId"])
+
+    if not target_user or not target_post:
+        return JsonResponse({"Error": "Post or User Not Found"})
+    
+    # Since Django intelligently handles any duplication checking
+    # on many-to-many fields, we can blindly add the user
+    target_post.dislike.add(target_user)
+    return JsonResponse({"Success": "Post Successfully Disliked"})
 
 @login_required
 def process_comment(request):
@@ -169,6 +207,10 @@ def create_game_view(request):
     return render(request, 'creators/create_game.html', context=context)
 
 @login_required
+def create_post_view(request):
+    return render(request, 'posts/create_post.html')
+
+@login_required
 def game_landing_view(request, id):
     game = Game.objects.get(pk=id)
     context = {
@@ -193,7 +235,30 @@ def process_game(request):
                         blurb=blurb,
                         description=description)
         new_game.save()
+
+        # Add the creating user to the list of developers
+        new_game.developers.add(User.objects.get(pk=request.user.id))
         return redirect('game_landing', id=new_game.id)
+
+@login_required
+def process_follow_game(request):
+    data = json.loads(request.body)
+    if not data:
+        return JsonResponse({"Error": "Bad Data Received"})
+    
+    target_user = User.objects.get(pk=data["userId"])
+    target_game = Game.objects.get(pk=data["gameId"])
+
+    if not target_user or not target_game:
+        return JsonResponse({"Error": "Game or User Not Found"})
+    
+    # Since Django intelligently handles any duplication checking
+    # on many-to-many fields, we can blindly add the user
+    target_user.extended_data.followed_games.add(target_game)
+    return JsonResponse({"Success": "Game Successfully Followed"})
+
+
+    
 
 @login_required
 def game_browsing_view(request):
@@ -202,6 +267,14 @@ def game_browsing_view(request):
         'games': games
     }
     return render(request, 'games/game_browse.html', context=context)
+
+@login_required
+def game_edit_view(request, id):
+    game = Game.objects.get(pk=id)
+    context = {
+        'game': game
+    }
+    return render(request, 'games/edit_game.html', context=context)
 
 @login_required
 def create_devblog_view(request):
