@@ -2,5 +2,14 @@
 
 {% block content %}
 <h1>Create Post Page</h1>
-
+<form action="{% url 'process_post' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <select name="related-game" required>
+        {% for game in all_games %}
+            <option value="{{ game.id }}">{{ game.title }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Submit Post" />
+</form>
 {% endblock content %}

@@ -2,6 +2,52 @@
 
 {% block content %}
 <h1>Post Page </h1>
+<p>{{ game.title }}</p>
 <h2>{{ post.author.username }}</h2>
 <h3>{{ post.post_content }}</h3>
+
+{# Comment Block Level 1 #}
+{% for depth_0_comment in post.all_comments %}
+    <h2>{{ depth_0_comment.author }}</h2>
+    <p>{{ depth_0_comment.post_content }}</p>
+
+    <div>
+        <form action="{% url 'process_comment' %}" method='post'>
+            <p>Comment</p>
+            {% csrf_token %}
+            {{ comment_form }}
+            <input type="hidden" value="{{ depth_0_comment.id }}" name="post-id" />
+            <input type="Submit" value="Reply" />
+        </form>
+    </div>
+    <a href="{% url 'individual_post' depth_0_comment.id %}">Click to see Depth 0 Comment As Post</a>
+
+    {# Comment Block Level 2 #}
+    {% for depth_1_comment in depth_0_comment.all_comments %}
+        <h3>{{ depth_1_comment.author }}</h3>
+        <p>{{ depth_1_comment.post_content }}</p>
+        <div>
+            <form action="{% url 'process_comment' %}" method='post'>
+                <p>Comment</p>
+                {% csrf_token %}
+                {{ comment_form }}
+                <input type="hidden" value="{{ depth_1_comment.id }}" name="post-id" />
+                <input type="Submit" value="Reply" />
+            </form>
+        </div>
+        <a href="{% url 'individual_post' depth_1_comment.id %}">Click to see Depth 1 Comment As Post</a>
+    {% endfor %}
+    
+{% endfor %}
+
+{# Add Comment Form #}
+        <div>
+            <form action="{% url 'process_comment' %}" method='post'>
+                <p>Comment</p>
+                {% csrf_token %}
+                {{ comment_form }}
+                <input type="hidden" value="{{ post.id }}" name="post-id" />
+                <input type="Submit" value="Reply" />
+            </form>
+        </div>
 {% endblock content %}

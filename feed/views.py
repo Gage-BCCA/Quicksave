@@ -42,11 +42,13 @@ def process_post(request):
     if form.is_valid():
         user = request.user
         text_content = form.cleaned_data.get('post_content')
+        related_game = Game.objects.get(pk=request.POST.get('related-game'))
 
         new_post = GenericPost(author=user,
                                post_content=text_content,
                                top_level_parent=None,
                                immediate_parent=None,
+                               related_game=related_game,
                                )
         new_post.save()
         return redirect('homepage')
@@ -107,7 +109,7 @@ def process_comment(request):
                                immediate_parent=parent_post,
                                )
         new_post.save()
-        return redirect('homepage')
+        return redirect('individual_post', id=top_level_parent.id)
 
 @login_required
 def process_follow(request):
@@ -137,8 +139,17 @@ def individual_post_view(request, id):
     """Returns the page for an individual post with most comments"""
 
     post = GenericPost.objects.get(pk=id)
+
+    if post.related_game:
+        target_game = Game.objects.get(pk=post.related_game.id)
+    else:
+        target_game = None
+
+    comment_form = UserPostForm()
     context = {
-        'post': post
+        'post': post,
+        'game': target_game,
+        'comment_form': comment_form,
     }
     return render(request, 'posts/individual_post.html', context=context)
     
@@ -208,7 +219,13 @@ def create_game_view(request):
 
 @login_required
 def create_post_view(request):
-    return render(request, 'posts/create_post.html')
+    form = UserPostForm()
+    all_games = Game.objects.all()
+    context = {
+        'form': form,
+        'all_games': all_games,
+    }
+    return render(request, 'posts/create_post.html', context=context)
 
 @login_required
 def game_landing_view(request, id):

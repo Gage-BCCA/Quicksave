@@ -11,13 +11,6 @@
     {# Defunct New Post Button #}
     <a href="{% url 'create_post' %}"><button>New Post</button></a>
 
-    {# Add New Post Form #}
-    <form action="{% url 'process_post' %}" method='post'>
-        <p>Comment</p>
-        {% csrf_token %}
-        {{ form }}
-        <input type="Submit" value="Reply" />
-    </form>
 
     {# Create New Game Form #}
     <a href="{% url 'create_game' %}"><button>Create New Game</button></a>
@@ -32,6 +25,9 @@
     <div class="post-card">
         <div class="post-card-top-level-post">
 
+            {# Related Game #}
+            <p>{{ post.related_game.title }}</p>
+
             {# Top Level Post Author Profile Picture #}
             <div class="post-card-author-profile-pic-container">
                 <div class="post-card-profile-pic-container">
@@ -42,8 +38,10 @@
                     {% endif %}
                 </div>
 
-                {# Top Level Post Author Username #}
+                {# Author and Follow Button Block #}
                 <div class="post-card-author">
+
+                    {# Top Level Post Author Username #}
                     <p>{{ post.author.username }}</p>
 
                     {# Follow Button #}
@@ -86,6 +84,7 @@
                     <input type="submit" value="dislike" />
                 </form>
             </div>
+
         </div>
 
         {# Comments Block #}
@@ -129,17 +128,6 @@
                 </div>
             </div>
         {% endfor %}
-
-        {# Add Comment Form #}
-        <div class="post-card-comment-container">
-            <form action="{% url 'process_comment' %}" method='post'>
-                <p>Comment</p>
-                {% csrf_token %}
-                {{ form }}
-                <input type="hidden" value="{{ post.id }}" name="post-id" />
-                <input type="Submit" value="Reply" />
-            </form>
-        </div>
 
     </div>
 {% endfor %}
