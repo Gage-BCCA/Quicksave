@@ -22,15 +22,20 @@
 {% for post in posts reversed %}
 
     {# Individual Post #}
-    <div class="post-card">
+    <div class="post-card post-card--big">
         <div class="post-card-top-level-post">
 
+            
             {# Related Game #}
-            <p>{{ post.related_game.title }}</p>
+            {% if post.related_game %}
+            <a href="{% url 'game_landing' post.related_game.id %}" class="related-game-button related-game-button--small">
+                <p>{{ post.related_game.title }}</p>
+            </a>
+            {% endif %}
 
             {# Top Level Post Author Profile Picture #}
-            <div class="post-card-author-profile-pic-container">
-                <div class="post-card-profile-pic-container">
+            <div class="post-header-container">
+                <div class="post-header-container__profile-pic">
                     {% if post.author.extended_data.profile_pic %}
                         <img src="{{ post.author.extended_data.profile_pic.url}}" class="post-card-profile-pic">
                     {% else %}
@@ -38,12 +43,14 @@
                     {% endif %}
                 </div>
 
-                {# Author and Follow Button Block #}
-                <div class="post-card-author">
-
+                {# Author Block #}
+                <div class="post-header-container__author">
                     {# Top Level Post Author Username #}
                     <p>{{ post.author.username }}</p>
+                </div>
 
+                {# Follow Button Block #}
+                <div class="post-header-container__follow-btn">
                     {# Follow Button #}
                     {% if post.author not in extended_user_data.followed_users.all %}
                         <form action="{% url 'process_follow' %}" method="post">
@@ -57,36 +64,52 @@
                         <input type="Submit" value="Followed" disabled/>
                     </form>
                     {% endif %}
-
                 </div>
+
             </div>
 
             {# Post Body #}
-            <p>{{ post.post_content }}</p>
-            <p>{{ post.num_comments }} Replies </p>
-            <p>{{ post.num_likes }} Likes </p>
-
-            {# Link to Individual Post Page #}
-            <p><a href="{% url 'individual_post' post.id %}">See Post </a></p>
-            
-            {# Like and Dislike Button #}
-            <div>   
-                <form method="post" class="post-like-form">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
-                    <input type="hidden" value="{{ post.id }}" name="post_id" class="post-like-post-id"/>
-                    <input type="submit" value="Like" class="like-submit-button"/>
-                </form>
-                <form method="post" class="post-dislike-form">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
-                    <input type="hidden" value="{{ post.id }}" name="post_id" class="post-dislike-post-id" />
-                    <input type="submit" value="dislike" />
-                </form>
+            <div class="post-body">
+                <p>{{ post.post_content }}</p>
             </div>
+
+
+            <div class="post-footer">
+                {# Like and Dislike Button #}
+                <div class="post-footer__like-btn">
+                    <form method="post" class="post-like-form">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
+                        <input type="hidden" value="{{ post.id }}" name="post_id" class="post-like-post-id"/>
+                        <input type="submit" value="Like" class="like-submit-button"/>
+                    </form>
+                    <p>{{ post.num_likes }}</p>
+                </div>
+                    <div class="post-footer__dislike-btn">
+                        <form method="post" class="post-dislike-form">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
+                            <input type="hidden" value="{{ post.id }}" name="post_id" class="post-dislike-post-id" />
+                            <input type="submit" value="dislike" />
+                        </form>
+                        <p>{{ post.num_dislikes }}</p>
+                    </div>
+                
+                <div class="post-footer__replies">
+                    <p>{{ post.num_comments }} Replies </p>
+                </div>
+                
+                <div class="post-footer__see-post-btn">
+                    {# Link to Individual Post Page #}
+                    <p><a href="{% url 'individual_post' post.id %}">See Post </a></p>
+                </div>
+            </div>
+            
+
 
         </div>
 
+        {% comment "This block is no longer necesssary, but keeping it here for now" %}
         {# Comments Block #}
         {% for comment in post.all_comments %}
             <div class="post-card-top-level-comment">
@@ -128,7 +151,8 @@
                 </div>
             </div>
         {% endfor %}
-
+        {% endcomment %}
+        
     </div>
 {% endfor %}
 

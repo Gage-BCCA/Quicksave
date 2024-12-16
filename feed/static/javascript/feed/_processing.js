@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
             postId = form.getElementsByClassName("post-dislike-post-id")[0].value;
 
             // Send request to the like endpoint
-            let response = await fetch(likeApiEndpoint, {
+            let response = await fetch(dislikeApiEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

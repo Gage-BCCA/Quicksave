@@ -1,53 +1,289 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Post Page </h1>
-<p>{{ game.title }}</p>
-<h2>{{ post.author.username }}</h2>
-<h3>{{ post.post_content }}</h3>
+{% load static %}
+<script src="{% static 'javascript/individual_post/individual_post.js' %}" defer></script>
+<div class="post-card post-card--big">
 
-{# Comment Block Level 1 #}
-{% for depth_0_comment in post.all_comments %}
-    <h2>{{ depth_0_comment.author }}</h2>
-    <p>{{ depth_0_comment.post_content }}</p>
+    {% if game %}
+    <a href="{% url 'game_landing' game.id %}" class="related-game-button">
+        <p>{{ game.title }}</p>
+    </a>
+    {% endif %}
 
-    <div>
-        <form action="{% url 'process_comment' %}" method='post'>
-            <p>Comment</p>
-            {% csrf_token %}
-            {{ comment_form }}
-            <input type="hidden" value="{{ depth_0_comment.id }}" name="post-id" />
-            <input type="Submit" value="Reply" />
-        </form>
+    {# Navigation to Parent Post #}
+    {% if post.immediate_parent %}
+        <a href="{% url 'individual_post' post.immediate_parent.id %}" class="related-game-button"><p>See Parent Post</p></a>
+    {% endif %}
+
+    {# Top Level Post Author Profile Picture #}
+            <div class="post-header-container">
+                <div class="post-header-container__profile-pic">
+                    {% if post.author.extended_data.profile_pic %}
+                        <img src="{{ post.author.extended_data.profile_pic.url}}" class="post-card-profile-pic">
+                    {% else %}
+                        <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="post-card-profile-pic">
+                    {% endif %}
+                </div>
+
+                {# Author and Follow Button Block #}
+                <div class="post-header-container__author">
+                    {# Top Level Post Author Username #}
+                    <p>{{ post.author.username }}</p>
+                </div>
+                <div class="post-header-container__follow-btn">
+                    {# Follow Button #}
+
+                    {% if post.author not in request.user.extended_data.followed_users.all %}
+                        <form action="{% url 'process_follow' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ request.user.id }}" name="initiating_user_id" />
+                            <input type="hidden" value="{{ post.author.id }}" name="target_user_id" />
+                            <input type="Submit" value="Follow" />
+                        </form>
+                    {% else %}
+                    <form>
+                        <input type="Submit" value="Followed" disabled/>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+    <div class="post-body">
+        <p>{{ post.post_content }}</p>
     </div>
-    <a href="{% url 'individual_post' depth_0_comment.id %}">Click to see Depth 0 Comment As Post</a>
-
-    {# Comment Block Level 2 #}
-    {% for depth_1_comment in depth_0_comment.all_comments %}
-        <h3>{{ depth_1_comment.author }}</h3>
-        <p>{{ depth_1_comment.post_content }}</p>
-        <div>
-            <form action="{% url 'process_comment' %}" method='post'>
-                <p>Comment</p>
-                {% csrf_token %}
-                {{ comment_form }}
-                <input type="hidden" value="{{ depth_1_comment.id }}" name="post-id" />
-                <input type="Submit" value="Reply" />
-            </form>
-        </div>
-        <a href="{% url 'individual_post' depth_1_comment.id %}">Click to see Depth 1 Comment As Post</a>
-    {% endfor %}
     
-{% endfor %}
+    <div class="post-footer">
+        {# Like and Dislike Button #}
+        <div class="post-footer__like-btn">
+            <form method="post" class="post-like-form">
+                {% csrf_token %}
+                <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
+                <input type="hidden" value="{{ post.id }}" name="post_id" class="post-like-post-id"/>
+                <input type="submit" value="Like" class="like-submit-button"/>
+            </form>
+            <p>{{ post.num_likes }}</p>
+        </div>
+            <div class="post-footer__dislike-btn">
+                <form method="post" class="post-dislike-form">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
+                    <input type="hidden" value="{{ post.id }}" name="post_id" class="post-dislike-post-id" />
+                    <input type="submit" value="dislike" />
+                </form>
+                <p>{{ post.num_dislikes }}</p>
+            </div>
+        
+        <div class="post-footer__replies">
+            <p>{{ post.num_comments }} Replies </p>
+        </div>
+
+        <div class="post-footer__add-comment-container" >
+            <div class="post-footer__add-comment-container__button" data-referred-post-id="{{ post.id }}">
+                <p>Add Comment</p>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 {# Add Comment Form #}
-        <div>
+        <div class="add-comment-form add-comment-form--hidden" data-referred-post-id="{{ post.id }}">
+            <p>Add A Comment</p>
             <form action="{% url 'process_comment' %}" method='post'>
-                <p>Comment</p>
                 {% csrf_token %}
-                {{ comment_form }}
+                <div class="add-comment-form__input-box">
+                    {{ comment_form.post_content }}
+                </div>
                 <input type="hidden" value="{{ post.id }}" name="post-id" />
-                <input type="Submit" value="Reply" />
+                <input type="Submit" value="Reply" class="add-comment-form__submit-btn"/>
             </form>
         </div>
+
+{# Comment Block Depth 1 #}
+{% for depth_1_comment in post.all_comments %}
+    <div class="post-card depth-1">
+
+        <div class="post-header-container">
+            <div class="post-header-container__profile-pic">
+                {% if depth_1_comment.author.extended_data.profile_pic %}
+                    <img src="{{ depth_1_comment.author.extended_data.profile_pic.url}}" class="post-card-profile-pic">
+                {% else %}
+                    <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="post-card-profile-pic">
+                {% endif %}
+            </div>
+
+            {# Author and Follow Button Block #}
+            <div class="post-header-container__author">
+                {# depth_1_comment Post Author Username #}
+                <p>{{ depth_1_comment.author.username }}</p>
+            </div>
+
+            <div class="post-header-container__follow-btn">
+                {# Follow Button #}
+                {% if depth_1_comment.author not in request.user.extended_data.followed_users.all %}
+                    <form action="{% url 'process_follow' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ request.user.id }}" name="initiating_user_id" />
+                        <input type="hidden" value="{{ depth_1_comment.author.id }}" name="target_user_id" />
+                        <input type="Submit" value="Follow" />
+                    </form>
+                {% else %}
+                <form>
+                    <input type="Submit" value="Followed" disabled/>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="post-body">
+            <p>{{ depth_1_comment.post_content }}</p>
+        </div>
+
+        <div class="post-footer">
+
+            {# Like and Dislike Button #}
+            <div class="post-footer__like-btn">
+                <form method="post" class="post-like-form">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
+                    <input type="hidden" value="{{ depth_1_comment.id }}" name="post_id" class="post-like-post-id"/>
+                    <input type="submit" value="Like" class="like-submit-button"/>
+                </form>
+                <p>{{ depth_1_comment.num_likes }}</p>
+            </div>
+            <div class="post-footer__dislike-btn">
+                <form method="post" class="post-dislike-form">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
+                    <input type="hidden" value="{{ depth_1_comment.id }}" name="post_id" class="post-dislike-post-id" />
+                    <input type="submit" value="dislike" />
+                </form>
+                <p>{{ depth_1_comment.num_dislikes }}</p>
+            </div>
+
+            <div class="post-footer__replies">
+                <p>{{ depth_1_comment.num_comments }} Replies </p>
+            </div>
+
+            <div class="post-footer__add-comment-container" >
+
+                {# Add Comment Form Depth 1 #}
+                <div class="post-footer__add-comment-container__button" data-referred-post-id="{{ depth_1_comment.id }}">
+                    <p>Add Comment</p>
+                </div>
+
+                {# Link to Individual Post Page #}
+                <div class="post-footer__see-post-btn">
+                    <p><a href="{% url 'individual_post' depth_1_comment.id %}">See Post </a></p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="add-comment-form depth-1 add-comment-form--hidden" data-referred-post-id="{{ depth_1_comment.id }}">
+        <p>Add A Comment</p>
+        <form action="{% url 'process_comment' %}" method='post'>
+            {% csrf_token %}
+            <div class="add-comment-form__input-box">
+                {{ comment_form.post_content }}
+            </div>
+            <input type="hidden" value="{{ depth_1_comment.id }}" name="post-id" />
+            <input type="Submit" value="Reply" class="add-comment-form__submit-btn"/>
+        </form>
+    </div>
+
+    {# Comment Block Level 2 #}
+    {% for depth_2_comment in depth_1_comment.all_comments %}
+    <div class="post-card depth-2">
+        <div class="post-header-container">
+            <div class="post-header-container__profile-pic">
+                {% if depth_2_comment.author.extended_data.profile_pic %}
+                    <img src="{{ depth_2_comment.author.extended_data.profile_pic.url}}" class="post-card-profile-pic">
+                {% else %}
+                    <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="post-card-profile-pic">
+                {% endif %}
+            </div>
+
+            {# Author and Follow Button Block #}
+            <div class="post-header-container__author">
+                {# depth_2_comment Post Author Username #}
+                <p>{{ depth_2_comment.author.username }}</p>
+            </div>
+
+            <div class="post-header-container__follow-btn">
+                {# Follow Button #}
+                {% if depth_2_comment.author not in request.user.extended_data.followed_users.all %}
+                    <form action="{% url 'process_follow' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ request.user.id }}" name="initiating_user_id" />
+                        <input type="hidden" value="{{ depth_2_comment.author.id }}" name="target_user_id" />
+                        <input type="Submit" value="Follow" />
+                    </form>
+                {% else %}
+                <form>
+                    <input type="Submit" value="Followed" disabled/>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="post-body">
+            <p>{{ depth_2_comment.post_content }}</p>
+        </div>
+
+        <div class="post-footer">
+
+            {# Like and Dislike Button #}
+            <div class="post-footer__like-btn">
+                <form method="post" class="post-like-form">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
+                    <input type="hidden" value="{{ depth_2_comment.id }}" name="post_id" class="post-like-post-id"/>
+                    <input type="submit" value="Like" class="like-submit-button"/>
+                </form>
+                <p>{{ depth_2_comment.num_likes }}</p>
+            </div>
+            <div class="post-footer__dislike-btn">
+                <form method="post" class="post-dislike-form">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
+                    <input type="hidden" value="{{ depth_2_comment.id }}" name="post_id" class="post-dislike-post-id" />
+                    <input type="submit" value="dislike" />
+                </form>
+                <p>{{ depth_2_comment.num_dislikes }}</p>
+            </div>
+
+            <div class="post-footer__replies">
+                <p>{{ depth_2_comment.num_comments }} Replies </p>
+            </div>
+
+            <div class="post-footer__add-comment-container" >
+                <div class="post-footer__add-comment-container__button" data-referred-post-id="{{ depth_2_comment.id }}">
+                    <p>Add Comment</p>
+                </div>
+                <div class="post-footer__see-post-btn">
+                    {# Link to Individual Post Page #}
+                    <p><a href="{% url 'individual_post' depth_2_comment.id %}">See Post </a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="add-comment-form depth-2 add-comment-form--hidden" data-referred-post-id="{{ depth_2_comment.id }}">
+        <p>Add A Comment</p>
+        <form action="{% url 'process_comment' %}" method='post'>
+            {% csrf_token %}
+            <div class="add-comment-form__input-box">
+                {{ comment_form.post_content }}
+            </div>
+            <input type="hidden" value="{{ depth_2_comment.id }}" name="post-id" />
+            <input type="Submit" value="Reply" class="add-comment-form__submit-btn"/>
+        </form>
+    </div>
+    {% endfor %}
+
+{% endfor %}
+
+
 {% endblock content %}

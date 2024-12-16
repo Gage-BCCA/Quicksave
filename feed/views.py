@@ -85,7 +85,7 @@ def process_post_dislike(request):
     
     # Since Django intelligently handles any duplication checking
     # on many-to-many fields, we can blindly add the user
-    target_post.dislike.add(target_user)
+    target_post.dislikes.add(target_user)
     return JsonResponse({"Success": "Post Successfully Disliked"})
 
 @login_required
@@ -109,7 +109,10 @@ def process_comment(request):
                                immediate_parent=parent_post,
                                )
         new_post.save()
-        return redirect('individual_post', id=top_level_parent.id)
+
+        if not top_level_parent:
+            return redirect('individual_post', id=new_post.id)
+        return redirect('individual_post', id=parent_post.id)
 
 @login_required
 def process_follow(request):
@@ -145,9 +148,12 @@ def individual_post_view(request, id):
     else:
         target_game = None
 
+    extended_user_data = ExtendedUserData.user
+
     comment_form = UserPostForm()
     context = {
         'post': post,
+        'extended_user_data': extended_user_data,
         'game': target_game,
         'comment_form': comment_form,
     }

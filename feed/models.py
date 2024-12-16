@@ -71,7 +71,9 @@ class GenericPost(models.Model):
     @property
     def num_comments(self):
         """Returns the total number of comments for a post"""
-        return GenericPost.objects.filter(top_level_parent = self.id).count()
+        if not self.top_level_parent:
+            return GenericPost.objects.filter(top_level_parent = self.id).count()
+        return GenericPost.objects.filter(immediate_parent=self.id).count()
     
     @property
     def num_likes(self):
