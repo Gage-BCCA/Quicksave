@@ -57,13 +57,16 @@
                             {% csrf_token %}
                             <input type="hidden" value="{{ request.user.id }}" name="initiating_user_id" />
                             <input type="hidden" value="{{ post.author.id }}" name="target_user_id" />
-                            <input type="Submit" value="Follow" />
+                            <input type="image" src="{% get_media_prefix %}/icons/plus-rectangle.svg" class="like-submit-button" />
                         </form>
                     {% else %}
                     <form>
-                        <input type="Submit" value="Followed" disabled/>
+                        <input type="image" src="{% get_media_prefix %}/icons/follow-btn-activated.svg" class="like-submit-button"  disabled/>
                     </form>
                     {% endif %}
+                </div>
+                <div class="post-header-container__more-btn">
+                    <img src="{% get_media_prefix %}/icons/more-horizontal.svg">
                 </div>
 
             </div>
@@ -77,31 +80,60 @@
             <div class="post-footer">
                 {# Like and Dislike Button #}
                 <div class="post-footer__like-btn">
-                    <form method="post" class="post-like-form">
-                        {% csrf_token %}
-                        <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
-                        <input type="hidden" value="{{ post.id }}" name="post_id" class="post-like-post-id"/>
-                        <input type="submit" value="Like" class="like-submit-button"/>
-                    </form>
-                    <p>{{ post.num_likes }}</p>
+                    <div class="post-footer__button-container">
+                        <div class="post-footer__button-container__icon">
+                            <form method="post" class="post-like-form">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
+                                <input type="hidden" value="{{ post.id }}" name="post_id" class="post-like-post-id"/>
+                                {% if post in request.user.likes.all %}
+                                <input type="image" src="{% get_media_prefix %}/icons/like-btn-activated.svg" alt="Like" class="like-submit-button"/>
+                                {% else %}
+                                <input type="image" src="{% get_media_prefix %}/icons/like-btn-deactivated.svg" alt="Like" class="like-submit-button"/>
+                                {% endif %}
+                            </form>
+                        </div>
+                        <div class="post-footer__button-container__button">
+                            <p>{{ post.num_likes }}</p>
+                        </div>
+                    </div>
                 </div>
+
+
                     <div class="post-footer__dislike-btn">
-                        <form method="post" class="post-dislike-form">
-                            {% csrf_token %}
-                            <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
-                            <input type="hidden" value="{{ post.id }}" name="post_id" class="post-dislike-post-id" />
-                            <input type="submit" value="dislike" />
-                        </form>
-                        <p>{{ post.num_dislikes }}</p>
+                        <div class="post-footer__button-container">
+                            <div class="post-footer__button-container__icon">
+                                <form method="post" class="post-dislike-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
+                                    <input type="hidden" value="{{ post.id }}" name="post_id" class="post-dislike-post-id" />
+                                    {% if post in request.user.dislikes.all %}
+                                    <input type="image" src="{% get_media_prefix %}/icons/dislike-btn-activated.svg" alt="Like" class="like-submit-button"/>
+                                    {% else %}
+                                    <input type="image" src="{% get_media_prefix %}/icons/dislike-btn-deactivated.svg" alt="Like" class="like-submit-button"/>
+                                    {% endif %}
+                                </form>
+                            </div>
+                            <div class="post-footer__button-container__button">
+                                <p>{{ post.num_dislikes }}</p>
+                            </div>
+                        </div>
                     </div>
                 
                 <div class="post-footer__replies">
-                    <p>{{ post.num_comments }} Replies </p>
+                    <div class="post-footer__button-container">
+                        <div class="post-footer__button-container__icon">
+                            <img src="{% get_media_prefix %}/icons/replies.svg" alt="Like" class="like-submit-button"/>
+                        </div>
+                        <div class="post-footer__button-container__button">
+                            <p>{{ post.num_comments }}</p>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="post-footer__see-post-btn">
                     {# Link to Individual Post Page #}
-                    <p><a href="{% url 'individual_post' post.id %}">See Post </a></p>
+                            <p><a href="{% url 'individual_post' post.id %}">See Post</a></p>
                 </div>
             </div>
             

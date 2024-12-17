@@ -3,6 +3,7 @@
 body {
     margin: 0;
     font-family: "Roboto Flex", sans-serif;
+    color: #2c3e50;
 
 }
 
@@ -61,9 +62,7 @@ body {
     background-color: #3498db;
     padding: 50px;
 }
-.hidden {
-    display: hidden;
-}
+
 .content-items-header-container {
     padding: 10px;
     margin-bottom: 25px;
@@ -109,34 +108,8 @@ body {
 }
 
 
-.post-card-comment-container {
-    background-color: #2878ad;
-    padding: 15px;
-    display: none;
-}
-.post-card-profile-pic-container {
-    flex: 1 1 5%;
-}
-.post-card-profile-pic {
-    border-radius: 100%;
-    height: 64px;
-    width: 64px;
-    
-}
 
-.post-card-comment-pic {
-    border-radius: 100%;
-    height: 48px;
-    width: 48px;
 
-}
-
-.post-card-top-level-comment {
-    margin: 10px 0px 15px 50px;
-    border-left: 2px solid gray;
-    padding: 15px;
-    background: lightgray;
-}
 
 /* Profile Page Styling */
 .profile-page-profile-pic {
@@ -144,25 +117,11 @@ body {
     height: 128px;
     width: 128px;
 }
-
-.card {
-    width: 190px;
-    height: 254px;
-    background: white;
-    border-radius: 10px;
-    transition: border-radius 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-   }
    
-.shadow {
-box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
-            0 0  0 2px rgb(190, 190, 190),
-            0.3em 0.3em 1em rgba(0,0,0,0.3);
-}
-
 /* Related Game Button Stlying */
 /* Used on Posts to link to the game that the post was made under */
 .related-game-button {
-    background-color: #95a5a6;
+    background-color: #2ecc71;
     border-radius: 50px;
     padding: 5px;
     width: 20%;
@@ -171,6 +130,7 @@ box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
     color: white;
     text-align: center;
     margin-bottom: 15px;
+    font-size: small;
 }
 
 .related-game-button:visited {
@@ -207,8 +167,10 @@ box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
     margin: 0;
     margin-bottom: 25px;
     padding: 25px;
+    padding-bottom: 15px;
 }
 
+/* RENAME THESE post-card--depth-1, etc. */
 .depth-1 {
     margin-left: 60px;
     margin-right: 75px;
@@ -228,20 +190,34 @@ box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
 }
 
 .post-header-container__profile-pic {
-    flex: 1 1 6%;
+    flex: 0 0 5%;
 
 }
 
+/* RENAME THIS */
+.post-card-profile-pic {
+    border-radius: 100%;
+    height: 64px;
+    width: 64px;  
+}
+
 .post-header-container__author {
-    flex: 1 1 10%;
+    flex: 0 1 15%;
     font-weight: bolder;
     align-content: center;
     margin: 0;
 }
 
 .post-header-container__follow-btn {
-    flex: 1 1 84%;
+    flex: 0 1 100%;
     align-content: center;
+    text-align: right;
+}
+
+.post-header-container__more-btn {
+    flex: 1 0 2%;
+    align-content: center;
+    text-align: right;
 }
 
 /* Post Body */
@@ -256,20 +232,23 @@ box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
 .post-footer {
     display: flex;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 10px;
     
 }
 
 .post-footer__like-btn {
     flex: 0 1 5%;
+    margin-right: 15px;
 }
 
 .post-footer__dislike-btn {
     flex: 0 1 5%;
+    margin-right: 15px;
 }
 
 .post-footer__replies {
     flex: 0 1 10%;
+    margin-right: 15px;
 }
 
 .post-footer__see-post-btn {
@@ -293,6 +272,15 @@ box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
 
 .post-footer__add-comment-container__button:hover {
     background-color: #2892ad;
+}
+
+.post-footer__button-container {
+    display: flex;
+}
+
+.post-footer__button-container > div {
+    flex: 0 1 25%;
+    align-content: center;
 }
 
 /* Add Comment Form */
@@ -324,6 +312,7 @@ box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
     padding: 10px;
     color: white;
 }
+
 .add-comment-form__submit-btn:hover {
     background-color: #2899ad;
 }
