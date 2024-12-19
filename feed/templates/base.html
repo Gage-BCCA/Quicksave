@@ -14,44 +14,21 @@
         <link rel="stylesheet" href="{% static 'styling/styles.css' %}">
     </head>
     <body>
-        <div class="main-view">
-            <div class="content-container">
+        <div>
+            <h1>Quicksave</h1>
+        </div>
+        <div class="main">
+            <div class="content">
                 <div class="content-items">
-                    <div class="content-items-header-container generic-flex-container">
-                        <div class="generic-flex-container-child">
-                            <h1>Quicksave</h1>
-                            
-                        </div>
-                        <div class="generic-flex-container-child social-bar-container">
-                            <div class="social-bar-item-containers">
-                                <div class="social-bar-item">
-                                    <p>notifications go here</p>
-                                </div>
-                                <div class="social-bar-item">
-                                    <p><a href="{% url 'logout' %}">Logout</a></p>
-                                </div>
-                                <div class="social-bar-item">
-                                    <p><a href="{% url 'logout' %}">Logout</a></p>
-                                </div>
-                                <div class="social-bar-item">
-                                    <p><a href="{% url 'logout' %}">Logout</a></p>
-                                </div>
-                                <div class="social-bar-item">
-                                    <p><a href="{% url 'logout' %}">Logout</a></p>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="content">
+                        {% block content %}
+                        {% endblock %}
                     </div>
-                
-                <div class="content-container">
-                    {% block content %}
-                    {% endblock %}
-                </div>
                 </div>
             </div>
-            <div class="navigation-container">
-                    <div class="navigation-items">
-                        <div class="navigation-header">
+            <div class="navigation">
+                    <div class="navigation__item">
+                        <div class="navigation__header">
                             <input type="text" placeholder="Search..." />
                         </div>
                         <p><a href="{% url 'homepage' %}">Home</a></p>

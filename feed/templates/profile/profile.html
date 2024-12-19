@@ -4,20 +4,51 @@
 {% load static %}
 
 {# Profile Picture #}
-{% if data.profile_pic %}
-    <img src="{{ data.profile_pic.url}}" class="profile-page-profile-pic">
-{% else %}
-    <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="profile-page-profile-pic">
-{% endif %}
+<div>
+    {% if data.profile_pic %}
+        <img src="{{ data.profile_pic.url}}" class="profile__pic">
+    {% else %}
+        <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="profile-page-profile-pic">
+    {% endif %}
+</div>
 
-{# Username and Headliner #}
-<h1>{{ user.username }}</h1>
-{% if data.headliner %}
-    <h2>{{ data.headliner }}</h2>
-{% else %}
-    <h2> No headliner yet :(</h2>
-{% endif %}
+{# Username #}
+<div class="username--emphasized">
+    <h1>{{ user.username }}</h1>
+</div>
 
+{# Headliner #}
+<div class="headliner">
+    {% if data.headliner %}
+        <h3>{{ data.headliner }}</h3>
+    {% else %}
+        <h3> No headliner yet :(</h3>
+    {% endif %}
+</div>
+
+{# User Stats #}
+<div class="stats">
+    <div class="stats__users">
+        <img src="{% get_media_prefix %}/icons/users.svg">
+        <p class="stats__label">Followed Users</p> 
+        <p class="stats__qty">{{ user.extended_data.followed_users.count }}
+    </div>
+    <div class="stats__posts">
+        <img src="{% get_media_prefix %}/icons/posts.svg">
+        <p class="stats__label">Amount of Posts</p> 
+        <p class="stats__qty">{{ post_qty }}
+    </div>
+    <div class="stats__games">
+        <img src="{% get_media_prefix %}/icons/gamepad.svg">
+        <p class="stats__label">Followed Games</p> 
+        <p class="stats__qty">{{ user.extended_data.followed_games.count }}
+    </div>
+</div>
+
+{# Follow Button #}
+{% if request.user.id != user.id %}
+    <h3>Follow</h3>
+{% endif %}
 
 {# User Bio #}
 {% if data.bio %}
@@ -27,18 +58,10 @@
 {% endif %}
 
 
-{# Follow Button #}
-{% if request.user.id != user.id %}
-    <h3>Follow</h3>
-{% endif %}
 
 
-{# Followed Users #}
-{% if data.followed_users.all|length == 0 %}
-    <h3>No Followed Users :(</h3>
-{% else %}
-    <p>Following {{ data.followed_users.count }} Users</p>
-{% endif %}
+
+
 
 
 {# Followed Games #}

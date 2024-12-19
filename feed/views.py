@@ -163,9 +163,11 @@ def individual_post_view(request, id):
 def profile_view(request, id):
     user = get_object_or_404(User, pk=id)
     data = get_object_or_404(ExtendedUserData, user=user)
+    post_qty = GenericPost.objects.filter(author=user).count()
     context = {
         'user': user,
-        'data': data
+        'data': data,
+        'post_qty': post_qty,
     }
     return render(request, 'profile/profile.html', context=context)
 

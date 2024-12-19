@@ -3,19 +3,25 @@
 {% block content %}
 {% load static %}
 <script src="{% static 'javascript/feed/_processing.js' %}" defer></script>
-<div class="welcome-container1">
-
-    {# Welcome Block #}
-    <h3>Welcome, {{ request.user.username }}</h3>
-
-    {# Defunct New Post Button #}
-    <a href="{% url 'create_post' %}"><button>New Post</button></a>
-
-
-    {# Create New Game Form #}
-    <a href="{% url 'create_game' %}"><button>Create New Game</button></a>
-
+<div class="welcome">
+    <div class="welcome__container">
+        <div class="welcome__greeting">
+            {# Welcome Block #}
+            <h3>Welcome, {{ request.user.username }}</h3>
+        </div>
+        <div class="welcome__menu">
+            <div class="welcome__icon">
+                <img src="{% get_media_prefix %}/icons/plus-circle.svg">
+                <div class="welcome__actions">
+                    <div><a href="{% url 'create_post' %}" class="welcome__item">New Post</a></div>
+                    <div><a href="{% url 'create_game' %}" class="welcome__item">Create Game</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 {# Main Posts Loops #}
 {# Gathers all posts and sorts them chronologically #}
@@ -46,7 +52,9 @@
                 {# Author Block #}
                 <div class="post-header-container__author">
                     {# Top Level Post Author Username #}
-                    <p>{{ post.author.username }}</p>
+                    <a href="{% url 'profile' post.author.id %}">
+                        <p>{{ post.author.username }}</p>
+                    </a>
                 </div>
 
                 {# Follow Button Block #}
