@@ -14,9 +14,6 @@
         <link rel="stylesheet" href="{% static 'styling/styles.css' %}">
     </head>
     <body>
-        <div>
-            <h1>Quicksave</h1>
-        </div>
         <div class="main">
             <div class="content">
                 <div class="content-items">
@@ -28,6 +25,7 @@
             </div>
             <div class="navigation">
                     <div class="navigation__item">
+                        <img src="{% get_media_prefix %}icons/bitmap.svg" style="min-width: 300px; max-width: 300px;">
                         <div class="navigation__header">
                             <input type="text" placeholder="Search..." />
                         </div>

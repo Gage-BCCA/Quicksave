@@ -1,9 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h1>All Games</h1>
+<div class="gamelist">
 {% for game in games %}
-    <h1>{{ game.title }}</h1>
-    <p>{{ game.blurb }}</p>
-    <a href="{% url 'game_landing' game.id %}"><button>See more</button></a>
+    <div class="gamecard">
+        <p>{{ game.genre }}</p>
+        <img src="https://placehold.co/200x100" style="min-width: 100%;">
+        <h1>{{ game.title }}</h1>
+        <p>{{ game.blurb }}</p>
+
+        
+        
+            <a href="{% url 'game_landing' game.id %}" >
+                <div class="gamecard__btn">
+                    <p>See More</p>
+                </div>
+            </a>
+    </div>
 {% endfor %}
+</div>
 {% endblock content %}

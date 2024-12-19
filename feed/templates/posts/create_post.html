@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Create Post Page</h1>
+<h1>Creating New Post</h1>
 <form action="{% url 'process_post' %}" method="post">
     {% csrf_token %}
     {{ form }}
