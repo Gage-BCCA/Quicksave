@@ -27,4 +27,10 @@ urlpatterns = [
     path('g/browse', views.game_browsing_view, name="game_browse"),
     path('g/<int:id>', views.game_landing_view, name="game_landing"),
     path('g/<int:id>/edit', views.game_edit_view, name="game_edit"),
+
+    # Specific Feeds
+    path('feed/<int:id>', views.game_feed_view, name="game_feed"),
+
+    # Searching
+    path('search/', views.search_view, name="search"),
 ]

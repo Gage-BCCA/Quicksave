@@ -25,9 +25,14 @@
             </div>
             <div class="navigation">
                     <div class="navigation__item">
-                        <img src="{% get_media_prefix %}icons/bitmap.svg" style="min-width: 300px; max-width: 300px;">
+                        <div style="max-width: 100%;">
+                            <img src="{% get_media_prefix %}icons/bitmap.svg" style="max-width: 100%;">
+                        </div>
                         <div class="navigation__header">
-                            <input type="text" placeholder="Search..." />
+                            <form action="{% url 'search' %}" method="GET">
+                                <input type="text" placeholder="Search..." name="search_value"/>
+                                <input type="image" src="{% get_media_prefix %}icons/search.svg" />
+                            </form>
                         </div>
                         <p><a href="{% url 'homepage' %}">Home</a></p>
                         <p><a href="{% url 'profile' request.user.id %}">My Profile</a></p>

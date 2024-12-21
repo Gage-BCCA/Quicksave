@@ -163,10 +163,12 @@ def individual_post_view(request, id):
 def profile_view(request, id):
     user = get_object_or_404(User, pk=id)
     data = get_object_or_404(ExtendedUserData, user=user)
+    recent_user_posts = GenericPost.objects.filter(author=user).order_by("-date_posted")[:3]
     post_qty = GenericPost.objects.filter(author=user).count()
     context = {
         'user': user,
         'data': data,
+        'recent_posts': recent_user_posts,
         'post_qty': post_qty,
     }
     return render(request, 'profile/profile.html', context=context)
@@ -238,8 +240,10 @@ def create_post_view(request):
 @login_required
 def game_landing_view(request, id):
     game = Game.objects.get(pk=id)
+    game_posts = GenericPost.objects.filter(related_game=game).filter(top_level_parent=None)
     context = {
-        'game': game
+        'game': game,
+        'game_posts': game_posts
     }
     return render(request, 'games/game_landing.html', context=context)
 
@@ -283,8 +287,15 @@ def process_follow_game(request):
     return JsonResponse({"Success": "Game Successfully Followed"})
 
 
-    
-
+@login_required
+def game_feed_view(request, id):
+    game = Game.objects.get(pk=id)
+    posts = GenericPost.objects.filter(related_game=game)
+    context = {
+        'game': game,
+        'posts': posts
+    }
+    return render(request, "feed/game_feed.html", context=context)
 @login_required
 def game_browsing_view(request):
     games = Game.objects.all()
@@ -302,6 +313,11 @@ def game_edit_view(request, id):
     return render(request, 'games/edit_game.html', context=context)
 
 @login_required
-def create_devblog_view(request):
-    context = {}
-    return render(request, 'creators/create_devblog.html', context=context)
+def search_view(request):
+    query = request.GET.get('search_value')
+    posts = GenericPost.objects.filter(post_content__icontains=query)
+    context = {
+        'search_results': posts
+    }
+
+    return render(request, 'search/search.html', context=context)

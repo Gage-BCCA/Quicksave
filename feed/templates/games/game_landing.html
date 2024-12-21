@@ -5,8 +5,39 @@
 
 <script src="{% static 'javascript/games/_landing_processing.js' %}" defer></script>
 
-<h1>{{ game.title }}</h1>
+<div class="game-headliner">
+    <h1 class="game-headliner__title">{{ game.title }}</h1>
+    <h2 class="game-headliner__blurb">{{ game.blurb }}</h2>
+</div>
 
+{# Description and Description Block #}
+<div class="game-details">
+    <div class="game-details__pic">
+        {% if not game.title_img %}
+            <img src="https://placehold.co/800x315">
+        {% else %}
+            <img src="{{ game.title_img.url }}" >
+        {% endif %}
+    </div>
+    <div class="game-details__desc">
+        <p>{{ game.description }}</p>
+    </div>
+</div>
+
+
+
+<h2>Developers</h2>
+{% for developer in game.developers.all %}
+    {% if developer.extended_data.profile_pic %}
+        <img src="{{ developer.extended_data.profile_pic.url }}" class="post-card-profile-pic">
+    {% else %}
+        <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="post-card-profile-pic">
+    {% endif %}
+    
+    <p>{{ developer.username }}</p>
+{% endfor %}
+
+{# Follow Button and Admin Toolbar #}
 {% if request.user in game.developers.all %}
     <a href="{% url 'game_edit' game.id %}"><button>Edit Game Listing</button></a>
     <button>Publish Devblog</button>
@@ -19,26 +50,116 @@
         <input type="submit" value="Follow Game" />
     </form>
 {% endif %}
-<div>
-    <h2>{{ game.blurb }}</h2>
-    {% if not game.title_img %}
-        <img src="https://placehold.co/800x315">
-    {% else %}
-        <img src="{{ game.title_img.url }}" >
-    {% endif %}
-</div>
 
-<div>
-    <p>{{ game.description }}</p>
-</div>
-<h2>Developers<h2>
-    {% for developer in game.developers.all %}
-        {% if developer.extended_data.profile_pic %}
-            <img src="{{ developer.extended_data.profile_pic.url }}" class="post-card-profile-pic">
-        {% else %}
-            <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="post-card-profile-pic">
-        {% endif %}
-        
-        <p>{{ developer.username }}</p>
+{# Recent Posts #}
+<h2 class="recent-posts__header">Recent Posts</h2>
+<div class="recent-posts">
+    {% for post in game_posts %}
+        {# Individual Post #}
+        <div class="recent-posts__post">
+            <div class="post-card post-card--no-margin-left">
+                <div>
+                    {# Top Level Post Author Profile Picture #}
+                    <div class="post-header-container">
+                        <div class="post-header-container__profile-pic">
+                            {% if post.author.extended_data.profile_pic %}
+                                <img src="{{ post.author.extended_data.profile_pic.url}}" class="post-card-profile-pic">
+                            {% else %}
+                                <img src="{% get_media_prefix %}/avatars/placeholder/avatar_placeholder.png" class="post-card-profile-pic">
+                            {% endif %}
+                        </div>
+                        {# Author Block #}
+                        <div class="post-header-container__author">
+                            {# Top Level Post Author Username #}
+                            <a href="{% url 'profile' post.author.id %}">
+                                <p>{{ post.author.username }}</p>
+                            </a>
+                        </div>
+                        {# Follow Button Block #}
+                        <div class="post-header-container__follow-btn">
+                            {# Follow Button #}
+                            {% if post.author not in request.user.extended_data.followed_users.all %}
+                                <form action="{% url 'process_follow' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ request.user.id }}" name="initiating_user_id" />
+                                    <input type="hidden" value="{{ post.author.id }}" name="target_user_id" />
+                                    <input type="image" src="{% get_media_prefix %}/icons/plus-rectangle.svg" class="like-submit-button" />
+                                </form>
+                            {% else %}
+                            <form>
+                                <input type="image" src="{% get_media_prefix %}/icons/follow-btn-activated.svg" class="like-submit-button"  disabled/>
+                            </form>
+                            {% endif %}
+                        </div>
+                        <div class="post-header-container__more-btn">
+                            <img src="{% get_media_prefix %}/icons/more-horizontal.svg">
+                        </div>
+                    </div>
+                    {# Post Body #}
+                    <div class="post-body">
+                        <p>{{ post.post_content }}</p>
+                    </div>
+                    <div class="post-footer">
+                        {# Like and Dislike Button #}
+                        <div class="post-footer__like-btn">
+                            <div class="post-footer__button-container">
+                                <div class="post-footer__button-container__icon">
+                                    <form method="post" class="post-like-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
+                                        <input type="hidden" value="{{ post.id }}" name="post_id" class="post-like-post-id"/>
+                                        {% if post in request.user.likes.all %}
+                                        <input type="image" src="{% get_media_prefix %}/icons/like-btn-activated.svg" alt="Like" class="like-submit-button"/>
+                                        {% else %}
+                                        <input type="image" src="{% get_media_prefix %}/icons/like-btn-deactivated.svg" alt="Like" class="like-submit-button"/>
+                                        {% endif %}
+                                    </form>
+                                </div>
+                                <div class="post-footer__button-container__button">
+                                    <p>{{ post.num_likes }}</p>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="post-footer__dislike-btn">
+                                <div class="post-footer__button-container">
+                                    <div class="post-footer__button-container__icon">
+                                        <form method="post" class="post-dislike-form">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
+                                            <input type="hidden" value="{{ post.id }}" name="post_id" class="post-dislike-post-id" />
+                                            {% if post in request.user.dislikes.all %}
+                                            <input type="image" src="{% get_media_prefix %}/icons/dislike-btn-activated.svg" alt="Like" class="like-submit-button"/>
+                                            {% else %}
+                                            <input type="image" src="{% get_media_prefix %}/icons/dislike-btn-deactivated.svg" alt="Like" class="like-submit-button"/>
+                                            {% endif %}
+                                        </form>
+                                    </div>
+                                    <div class="post-footer__button-container__button">
+                                        <p>{{ post.num_dislikes }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="post-footer__replies">
+                            <div class="post-footer__button-container">
+                                <div class="post-footer__button-container__icon">
+                                    <img src="{% get_media_prefix %}/icons/replies.svg" alt="Like" class="like-submit-button"/>
+                                </div>
+                                <div class="post-footer__button-container__button">
+                                    <p>{{ post.num_comments }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-footer__see-post-btn">
+                            {# Link to Individual Post Page #}
+                                    <p><a href="{% url 'individual_post' post.id %}">See Post</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endfor %}
+</div>
+<div class="feed-link">
+    <a href="{% url 'game_feed' game.id %}" class="feed-link__btn">See All Posts</a>
+</div>
 {% endblock content %}

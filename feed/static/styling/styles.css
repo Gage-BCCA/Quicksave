@@ -10,12 +10,13 @@ body {
 .main {
     display: flex;
     text-align: center;
+    max-width: 100vw;
 }
 
 .content {
-    flex: 1 1 85%;
+    flex: 0 1 85%;
     text-align: left;
-    padding: 15px;
+    padding: 1rem;
     
 }
 
@@ -27,8 +28,8 @@ body {
 }
 
 .navigation__header {
-    margin-bottom: 25px;
-    padding: 25px;
+    margin-bottom: 2rem;
+    padding: 2rem;
 }
 
 .navigation__item {
@@ -36,7 +37,7 @@ body {
     top: 10vh;
     right: 0;
     height: 80vh;
-    width: 15%;
+    max-width: 15%;
     align-content: center;
     border-left: 3px solid gray;
     border-image: linear-gradient(blue, red) 1;
@@ -180,6 +181,10 @@ body {
     padding-bottom: 15px;
 }
 
+.post-card--no-margin-left {
+    margin-left: 0;
+}
+
 /* RENAME THESE post-card--depth-1, etc. */
 .depth-1 {
     margin-left: 60px;
@@ -208,7 +213,8 @@ body {
 .post-card-profile-pic {
     border-radius: 100%;
     height: 64px;
-    width: 64px;  
+    width: 64px;
+    margin-right: .5rem;  
 }
 
 .post-header-container__author {
@@ -329,11 +335,11 @@ body {
 
 /* Game Card Stlying */
 .gamecard {
-    padding: 10px;
     flex-grow: 1;
-    width: 30%;
+    min-width: 30%;
     max-width: 30%;
-    margin: 10px 15px;
+    margin: 1rem .5rem;
+    padding: .5rem;
 }
 
 .gamecard__btn {
@@ -343,12 +349,12 @@ body {
     color: white;
     border-radius: 10px;
     transition-duration: 150ms;
-    margin-top: 15px;
+    margin-top: 1rem;
     display: inline-block;
 }
 .gamecard__btn:hover {
     background-color: #2892ad;
-    padding: 0px 25px;
+    padding: 0 2rem;
 }
 
 .gamelist {
@@ -356,6 +362,63 @@ body {
     flex-wrap: wrap;
 }
 .gamecard:nth-child(3n+2){
-    border-left: 1px solid red;
-    border-right: 1px solid red;
+    border-left: 2px solid #2892ad;
+    border-right: 2px solid #2892ad;
 }
+
+/* Game Landing Page Styling */
+.game-headliner__title{
+    font-size: 3rem;
+    margin-bottom: 0;
+}
+
+.game-headliner__blurb {
+    margin-top: 0;
+}
+.game-details {
+    display: flex;
+}
+
+.game-details__pic {
+    flex: 0 0 50%;
+}
+
+.game-details__desc {
+    flex: 0 0 50%;
+    margin-left: 2rem;
+}
+
+.recent-posts {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.recent-posts__post {
+    flex-grow: 1;
+    min-width: 50%;
+}
+
+.recent-posts__header {
+    margin-top: 2.5rem;
+    margin-bottom: 0;
+}
+
+.feed-link {
+    text-align: center;
+    background-color: #2878ad;
+    padding: .5rem;
+    transition-duration: 150ms;
+    max-width: 50%;
+    margin: auto;
+    border-radius: 10px;
+}
+.feed-link__btn {
+    text-decoration: none;
+    color: white;
+}
+
+.feed-link:hover {
+    transform: scale(1.05);
+    background-color: #2899ad;
+}
+

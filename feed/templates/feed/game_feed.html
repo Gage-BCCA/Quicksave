@@ -2,42 +2,12 @@
 
 {% block content %}
 {% load static %}
-<script src="{% static 'javascript/feed/_processing.js' %}" defer></script>
-<div class="welcome">
-    <div class="welcome__container">
-        <div class="welcome__greeting">
-            {# Welcome Block #}
-            <h3>Welcome, {{ request.user.username }}</h3>
-        </div>
-        <div class="welcome__menu">
-            <div class="welcome__icon">
-                <img src="{% get_media_prefix %}/icons/plus-circle.svg">
-                <div class="welcome__actions">
-                    <div><a href="{% url 'create_post' %}" class="welcome__item">New Post</a></div>
-                    <div><a href="{% url 'create_game' %}" class="welcome__item">Create Game</a></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<h1>{{ game.title }} Feed</h1>
 
-
-
-{# Main Posts Loops #}
-{# Gathers all posts and sorts them chronologically #}
 {% for post in posts reversed %}
-
     {# Individual Post #}
     <div class="post-card post-card--big">
         <div class="post-card-top-level-post">
-
-            
-            {# Related Game #}
-            {% if post.related_game %}
-            <a href="{% url 'game_landing' post.related_game.id %}" class="related-game-button related-game-button--small">
-                <p>{{ post.related_game.title }}</p>
-            </a>
-            {% endif %}
 
             {# Top Level Post Author Profile Picture #}
             <div class="post-header-container">
@@ -147,6 +117,5 @@
         </div>
     </div>
 {% endfor %}
-
-
 {% endblock content %}
+
