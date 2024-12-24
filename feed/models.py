@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+import markdown
+
+
 class Keyword(models.Model):
     keyword = models.CharField(max_length=50)
 
@@ -88,3 +91,8 @@ class GenericPost(models.Model):
     @property
     def all_comments(self):
         return GenericPost.objects.filter(immediate_parent=self.id)
+    
+    @property
+    def formatted_content(self):
+        md = markdown.Markdown(extensions=["fenced_code"])
+        return md.convert(self.post_content)

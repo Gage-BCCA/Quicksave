@@ -81,7 +81,7 @@
 
             {# Post Body #}
             <div class="post-body">
-                <p>{{ post.post_content }}</p>
+                <p>{{ post.formatted_content| safe }}</p>
             </div>
 
 

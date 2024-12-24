@@ -12,6 +12,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{% static 'styling/styles.css' %}">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-coy.min.css" rel="stylesheet" />
     </head>
     <body>
         <div class="main">
@@ -40,8 +41,10 @@
                         <p><a href="{% url 'logout' %}">Logout</a></p>
                     </div>
                 </div>
+
             </div>
         </div>
-        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/components/prism-python.min.js"></script>
     </body>
 </html>

@@ -58,12 +58,6 @@
 {% endif %}
 
 
-{# Followed Games #}
-{% for game in data.followed_games.all  %}
-<h1>{{ game.title }}</h1>
-{% endfor %}
-
-
 {# Profile Edit Button #}
 {# Only renders if the targeted user ID and the request user ID are the same #}
 {% if request.user.id == user.id %}
@@ -118,7 +112,7 @@
                     </div>
                     {# Post Body #}
                     <div class="post-body">
-                        <p>{{ post.post_content }}</p>
+                        <p>{{ post.formatted_content | safe }}</p>
                     </div>
                     <div class="post-footer">
                         {# Like and Dislike Button #}

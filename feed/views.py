@@ -1,4 +1,5 @@
 import json
+import markdown
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -19,11 +20,9 @@ from .forms import GameCreationForm
 def homepage_view(request):
     """Returns the main feed page. Here is where the 'algorithm' is used to deliver front page material"""
 
-    form = UserPostForm()
     all_posts = GenericPost.objects.all().filter(immediate_parent__isnull = True)
     current_user_extended_data = ExtendedUserData.objects.get(user=request.user.id)
     context = {
-        'form': form,
         'posts': all_posts,
         'extended_user_data': current_user_extended_data,
         }

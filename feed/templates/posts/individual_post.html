@@ -50,7 +50,7 @@
             </div>
 
     <div class="post-body">
-        <p>{{ post.post_content }}</p>
+        <p>{{ post.formatted_content | safe }}</p>
     </div>
     
     <div class="post-footer">
@@ -165,7 +165,7 @@
         </div>
 
         <div class="post-body">
-            <p>{{ depth_1_comment.post_content }}</p>
+            <p>{{ depth_1_comment.formatted_content | safe }}</p>
         </div>
 
         <div class="post-footer">
@@ -286,7 +286,7 @@
         </div>
 
         <div class="post-body">
-            <p>{{ depth_2_comment.post_content }}</p>
+            <p>{{ depth_2_comment.formatted_content | safe }}</p>
         </div>
 
         <div class="post-footer">
