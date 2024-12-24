@@ -230,6 +230,11 @@ body {
     text-align: right;
 }
 
+.post-header-container__follow-btn > form > input:hover {
+    transform: scale(1.2);
+    transition-duration: 150ms;
+}
+
 .post-header-container__more-btn {
     flex: 1 0 2%;
     align-content: center;
@@ -255,11 +260,21 @@ body {
 .post-footer__like-btn {
     flex: 0 1 5%;
     margin-right: 15px;
+    transition-duration: 150ms;
+}
+
+.post-footer__like-btn:hover {
+    transform: scale(1.1);
 }
 
 .post-footer__dislike-btn {
     flex: 0 1 5%;
     margin-right: 15px;
+    transition-duration: 150ms;
+}
+
+.post-footer__dislike-btn:hover {
+    transform: scale(1.1);
 }
 
 .post-footer__replies {
@@ -272,6 +287,19 @@ body {
     text-align: right;
 }
 
+.post-footer__see-post-btn > p > a {
+    background-color: #2878ad;
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    transition-duration: 150ms;
+}
+.post-footer__see-post-btn > p > a:hover {
+    background-color: #2892ad;
+    padding: 10px 25px;
+
+}
 .post-footer__add-comment-container {
     flex: 1 1 80%;
     text-align: right;
@@ -288,6 +316,7 @@ body {
 
 .post-footer__add-comment-container__button:hover {
     background-color: #2892ad;
+    padding: 0 25px;
 }
 
 .post-footer__button-container {
