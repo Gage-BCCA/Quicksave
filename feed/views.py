@@ -240,7 +240,7 @@ def create_post_view(request):
 @login_required
 def game_landing_view(request, id):
     game = Game.objects.get(pk=id)
-    game_posts = GenericPost.objects.filter(related_game=game).filter(top_level_parent=None)
+    game_posts = GenericPost.objects.filter(related_game=game).filter(top_level_parent=None)[:3]
     context = {
         'game': game,
         'game_posts': game_posts
@@ -296,6 +296,7 @@ def game_feed_view(request, id):
         'posts': posts
     }
     return render(request, "feed/game_feed.html", context=context)
+
 @login_required
 def game_browsing_view(request):
     games = Game.objects.all()
@@ -307,6 +308,25 @@ def game_browsing_view(request):
 @login_required
 def game_edit_view(request, id):
     game = Game.objects.get(pk=id)
+
+    if request.method == "POST":
+        title = request.POST["title"]
+        blurb = request.POST["blurb"]
+        price = request.POST["price"]
+        description = request.POST["description"]
+        release_date = request.POST["release_date"]
+
+        game.title = title
+        game.blurb = blurb
+        game.price = price
+        game.description = description
+        if release_date:
+            game.release_date = release_date
+
+        game.save()
+        return redirect('game_landing', id=id)
+
+    
     context = {
         'game': game
     }
