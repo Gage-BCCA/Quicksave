@@ -2,5 +2,37 @@
 
 {% block content %}
 <h1>{{ game.title }}</h1>
-<p>{{ num_posts }}</p>
+
+{# Statistics Block #}
+    <div class="statistics">
+        <div class="statcard">
+            <h2 class="statcard__label">Number of Posts</h2>
+            <p class="statcard__stat">{{ num_posts }}</p>
+        </div>
+        <div class="statcard">
+            <h2 class="statcard__label">Number of Followers</h2>
+            <p class="statcard__stat">{{ num_followers }}</p>
+        </div>
+        <div class="statcard">
+            <h2 class="statcard__label">Number of Posts</h2>
+            <p class="statcard__stat">{{ num_posts }}</p>
+        </div>
+    </div>
+{# End Statistics Block #}
+
+{# Team Member Block #}
+    {% for developer in game.developers.all %}
+        <p>{{ developer.username }}</p>
+    {% endfor %}
+    <button>Add Team Members</button>
+{# End Team Member Block #}
+
+{# Quick Action Block #}
+    <h2>Quick Actions</h2>
+    <button>Make a Devblog</button>
+    <button>Edit Game Listing</button>
+    <button>Create a new Poll</button>
+    <button>Upload Landing Page Images</button>
+{# End Quick Action Block #}
+
 {% endblock %}

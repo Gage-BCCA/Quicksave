@@ -1,3 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+
+body {
+    margin: 0;
+    font-family: "Roboto Flex", sans-serif;
+    color: #2c3e50;
+
+}
+
 .main-container {
     display: flex;
 }
@@ -10,4 +19,15 @@
 .content {
     flex: 1 1 80%;
     padding: .5rem;
+}
+
+.statistics {
+    display: flex
+}
+
+.statcard {
+    flex: 1 1 30%;
+    border: 1px solid yellow;
+    padding: .5rem;
+    margin: .5rem;
 }
