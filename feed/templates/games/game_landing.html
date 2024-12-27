@@ -40,7 +40,7 @@
 {# Follow Button and Admin Toolbar #}
 {% if request.user in game.developers.all %}
     <a href="{% url 'game_edit' game.id %}"><button>Edit Game Listing</button></a>
-    <button>Publish Devblog</button>
+    <a href="{% url 'cms_landing' game.id %}"><button>Manage</button></a>
     <button>Make Post</button>
 {% else %}
     <form action="{% url 'process_follow_game' %}" method="post" class="game-follow-form">

@@ -36,15 +36,6 @@ class Game(models.Model):
         return self.title
     
 
-class DevBlog(models.Model):
-    title = models.CharField(max_length=255)
-    related_game = models.ForeignKey(Game, null=False, on_delete=models.CASCADE)
-    blurb = models.TextField()
-    content = models.TextField()
-
-    def __str__(self):
-        return self.title
-
 class GenericPost(models.Model):
     """
     Generic Model for posts and replies for comments.
@@ -61,7 +52,7 @@ class GenericPost(models.Model):
     date_posted = models.DateTimeField(auto_now=True)
     post_content = models.TextField()
     keywords = models.ManyToManyField(Keyword, default=None)
-    related_game = models.ForeignKey(Game, null=True, on_delete=models.CASCADE)
+    related_game = models.ForeignKey(Game, null=True, on_delete=models.CASCADE, related_name="posts_per_game")
     top_level_parent = models.ForeignKey('GenericPost', on_delete=models.CASCADE, null=True)
     immediate_parent = models.ForeignKey('GenericPost', on_delete=models.CASCADE, null=True, related_name="child_post")
     author = models.ForeignKey(User, on_delete=models.CASCADE)
