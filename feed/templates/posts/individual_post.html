@@ -2,7 +2,7 @@
 
 {% block content %}
 {% load static %}
-<script src="{% static 'javascript/individual_post/individual_post.js' %}" defer></script>
+<script src="{% static 'javascript/global/_processing.js' %}" defer></script>
 <div class="post-card post-card--big">
 
     {% if game %}
@@ -150,7 +150,7 @@
             <div class="post-header-container__follow-btn">
                 {# Follow Button #}
                 {% if depth_1_comment.author not in request.user.extended_data.followed_users.all %}
-                    <form action="{% url 'process_follow' %}" method="post">
+                    <form action="{% url 'process_follow' %}" method="post" >
                         {% csrf_token %}
                         <input type="hidden" value="{{ request.user.id }}" name="initiating_user_id" />
                         <input type="hidden" value="{{ depth_1_comment.author.id }}" name="target_user_id" />
@@ -196,7 +196,7 @@
                         <form method="post" class="post-dislike-form">
                             {% csrf_token %}
                             <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
-                            <input type="hidden" value="{{ post.id }}" name="post_id" class="post-dislike-post-id" />
+                            <input type="hidden" value="{{ depth_1_comment.id }}" name="post_id" class="post-dislike-post-id" />
                             {% if depth_1_comment in request.user.dislikes.all %}
                             <input type="image" src="{% get_media_prefix %}/icons/dislike-btn-activated.svg" alt="Like" class="like-submit-button"/>
                             {% else %}
@@ -299,7 +299,7 @@
                             {% csrf_token %}
                             <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-like-user-id" />
                             <input type="hidden" value="{{ depth_2_comment.id }}" name="post_id" class="post-like-post-id"/>
-                            {% if depth_1_comment in request.user.likes.all %}
+                            {% if depth_2_comment in request.user.likes.all %}
                                 <input type="image" src="{% get_media_prefix %}/icons/like-btn-activated.svg" alt="Like" class="like-submit-button"/>
                             {% else %}
                                 <input type="image" src="{% get_media_prefix %}/icons/like-btn-deactivated.svg" alt="Like" class="like-submit-button"/>
@@ -317,7 +317,7 @@
                         <form method="post" class="post-dislike-form">
                             {% csrf_token %}
                             <input type="hidden" value="{{ request.user.id }}" name="user_id" class="post-dislike-user-id" />
-                            <input type="hidden" value="{{ post.id }}" name="post_id" class="post-dislike-post-id" />
+                            <input type="hidden" value="{{ depth_2_comment.id }}" name="post_id" class="post-dislike-post-id" />
                             {% if depth_2_comment in request.user.dislikes.all %}
                             <input type="image" src="{% get_media_prefix %}/icons/dislike-btn-activated.svg" alt="Like" class="like-submit-button"/>
                             {% else %}

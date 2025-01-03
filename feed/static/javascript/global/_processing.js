@@ -1,5 +1,6 @@
 const likeApiEndpoint = "/process-post-like/"
 const dislikeApiEndpoint = "/process-post-dislike/"
+const gameFollowApiEndpoint = "/process-follow-game/"
 const csrftoken = getCookie('csrftoken');
 
 const messageBox = document.getElementById("message-box")
@@ -62,6 +63,33 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log(data);
         })
     }
+
+    // Find any Game Follow Forms and handle the submit
+    const gameFollowForms = document.getElementsByClassName("game-follow-form");
+    for (let form of gameFollowForms){
+        form.addEventListener("submit", async function(event){
+            event.preventDefault();
+            const userId = form.getElementsByClassName("game-form-user-id")[0].value;
+            const gameId = form.getElementsByClassName("game-form-game-id")[0].value;
+
+            let response = await fetch(gameFollowApiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    gameId: gameId
+                })
+            });
+
+            let data = await response.json();
+            if ("Success" in data) {
+                turnOffFollowButton()
+            }
+        });
+    }
 });
 
 function getCookie(name) {
@@ -78,4 +106,10 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+function turnOffFollowButton() {
+    let button = document.getElementById("follow-submit-btn");
+    button.disabled = true;
+    button.value = "Followed";
 }
