@@ -2,7 +2,6 @@
 
 {% block content %}
 <h2>Login</h2>
-
 <form action="" method="post">
     {% csrf_token %}
     <div>
@@ -17,7 +16,7 @@
 </form>
 <div>
     <p>
-        Already have an account? <a href='{% url "register" %}'>Sign in</a>
+        Need to Create an Account? <a href='{% url "register" %}'>Register</a>
     </p>
 </div>
 {% for message in messages  %}

@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+
+body {
+    background-color: #2892ad;
+    font-family: "Roboto Flex", sans-serif;
+    color: #2c3e50;
+}
+
+.auth-form {
+    background-color: white;
+    width: 25%;
+    margin: auto;
+    margin-top: 25vh;
+    padding: 25px;
+}
