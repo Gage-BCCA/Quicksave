@@ -1,4 +1,3 @@
-
 const gameFollowApiEndpoint = "/process-follow-game/"
 
 document.addEventListener("DOMContentLoaded", function(event){
@@ -16,13 +15,15 @@ document.addEventListener("DOMContentLoaded", function(event){
                     'X-CSRFToken': getCookie('csrftoken'),
                 },
                 body: JSON.stringify({
-                    'userId': userId,
-                    'gameId': gameId
+                    userId: userId,
+                    gameId: gameId
                 })
             });
 
-            let data = await response.json()
-
+            let data = await response.json();
+            if ("Success" in data) {
+                turnOffFollowButton()
+            }
         });
     }
 });
@@ -41,4 +42,11 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+
+function turnOffFollowButton() {
+    let button = document.getElementById("follow-submit-btn");
+    button.disabled = true;
+    button.value = "Followed";
 }

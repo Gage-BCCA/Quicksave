@@ -270,6 +270,7 @@ def process_game(request):
 
 @login_required
 def process_follow_game(request):
+    print(request.body)
     data = json.loads(request.body)
     if not data:
         return JsonResponse({"Error": "Bad Data Received"})

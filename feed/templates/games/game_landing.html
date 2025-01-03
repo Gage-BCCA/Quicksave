@@ -43,12 +43,16 @@
     <button>Publish Devblog</button>
     <button>Make Post</button>
 {% else %}
-    <form action="{% url 'process_follow_game' %}" method="post" class="game-follow-form">
-        {% csrf_token %}
-        <input type="hidden" value="{{ request.user.id }}" name="user_id" class="game-form-user-id"/>
-        <input type="hidden" value="{{ game.id }}" name="game_id" class="game-form-game-id"/>
-        <input type="submit" value="Follow Game" />
-    </form>
+    {% if game in request.user.extended_data.followed_games.all %}
+        <input type="submit" value="Followed" id="follow-submit-btn" disabled/>
+    {% else %}
+        <form action="" class="game-follow-form">
+            {% csrf_token %}
+            <input type="hidden" value="{{ request.user.id }}" name="user_id" class="game-form-user-id"/>
+            <input type="hidden" value="{{ game.id }}" name="game_id" class="game-form-game-id"/>
+            <input type="submit" value="Follow Game" id="follow-submit-btn"/>
+        </form>
+    {% endif %}
 {% endif %}
 
 {# Recent Posts #}
