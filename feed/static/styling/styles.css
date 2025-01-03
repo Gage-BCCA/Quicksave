@@ -409,11 +409,16 @@ body {
 }
 
 .game-details__pic {
-    flex: 0 0 50%;
+    flex: 0 1 50%;
+}
+
+.game-details__pic > img {
+    min-width: none;
+    min-height: none;
 }
 
 .game-details__desc {
-    flex: 0 0 50%;
+    flex: 1 1 50%;
     margin-left: 2rem;
 }
 
