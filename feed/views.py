@@ -227,6 +227,18 @@ def create_game_view(request):
     return render(request, 'creators/create_game.html', context=context)
 
 @login_required
+def delete_game_view(request, id):
+    target_game = Game.objects.get(pk=id)
+
+    # Basic checking so non-developers can't delete random games
+    if request.user not in target_game.developers.all():
+        return redirect('homepage')
+    
+    target_game.delete()
+    return redirect('homepage')
+
+
+@login_required
 def create_post_view(request):
     form = UserPostForm()
     all_games = Game.objects.all()

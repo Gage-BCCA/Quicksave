@@ -34,16 +34,6 @@ class Game(models.Model):
 
     def __str__(self):
         return self.title
-    
-
-class DevBlog(models.Model):
-    title = models.CharField(max_length=255)
-    related_game = models.ForeignKey(Game, null=False, on_delete=models.CASCADE)
-    blurb = models.TextField()
-    content = models.TextField()
-
-    def __str__(self):
-        return self.title
 
 class GenericPost(models.Model):
     """

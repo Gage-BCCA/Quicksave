@@ -41,6 +41,7 @@
     <a href="{% url 'game_edit' game.id %}"><button>Edit Game Listing</button></a>
     <button>Publish Devblog</button>
     <button>Make Post</button>
+    <a href="{% url 'delete_game' game.id %}">Delete Game</a>
 {% else %}
     {% if game in request.user.extended_data.followed_games.all %}
         <input type="submit" value="Followed" id="follow-submit-btn" disabled/>

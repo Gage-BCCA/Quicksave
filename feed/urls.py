@@ -13,6 +13,7 @@ urlpatterns = [
     path('process-follow-game/', views.process_follow_game, name="process_follow_game"),
     path('process-post-like/', views.process_post_like, name="process_post_like"),
     path('process-post-dislike/', views.process_post_dislike, name="process_post_dislike"),
+    path('delete_game/<int:id>', views.delete_game_view, name="delete_game"),
 
     # Post URLs
     path('p/<int:id>', views.individual_post_view, name="individual_post"),
